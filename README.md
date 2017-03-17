@@ -4,4 +4,4 @@
 
 # Persistencia
 
-![Diseño conceptual](https://raw.githubusercontent.com/davidabian/barestv-servidor/tree/master/dise%C3%B1o/er.png)
+![Diseño conceptual](/dise%C3%B1o/er.png?raw=true "Diseño conceptual")
