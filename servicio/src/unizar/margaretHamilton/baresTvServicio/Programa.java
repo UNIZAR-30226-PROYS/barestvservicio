@@ -45,7 +45,8 @@ public class Programa {
 		
 		String sql= "INSERT INTO programa " +
                 "(titulo, bar, descr, destacado, inicio, fin, cat )"+
-            	"VALUES (?,?,?,?,?,?,?,?,?)";
+            	"VALUES (?,?,?,?,?,?,?)";
+		//System.out.println(sql);
 		database.executeSentence(sql, titulo,bar,descripcion,0,inicio,fin,categoria);
 		}
 		catch (Exception e){
@@ -59,7 +60,8 @@ public class Programa {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		String a = dtf.format(now);
 		String sql = "SELECT * FROM programa "
-				+ "WHERE fin > "+"'"+a+"'"+ "bar = "+bar;
+				+ "WHERE fin > "+"'"+a+"'"+ " and bar = "+"'"+bar+"'";
+		//System.out.println(sql);
 		
 		return database.executeQuery(sql);
 	}
