@@ -2,6 +2,7 @@ package unizar.margaretHamilton.baresTvServicio;
 
 
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * Clase para acceder a una BD Oracle
@@ -132,6 +133,62 @@ public class DBConnection {
 		return rs;
 	}
 	
+	
+	public ArrayList<Object> executeQueryO(String sql) {
+
+		// Creamos una sentencia para poder usarla con la conexion que
+		// tenemos abierta
+		Statement stmt = null;
+		ArrayList<Object> list = new ArrayList<Object>();
+		ResultSet rs;
+		try {
+			System.out
+					.println("---------------------------------------------------------------------------------------");
+			stmt = connection.createStatement();
+			// Formulamos la pregunta y obtenemos el resultado
+			 rs = stmt.executeQuery(sql);
+
+			//Modulo de presentacion de datos
+
+			// Creamos la cabecera de la tabla...
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();
+
+			for (int i = 1; i <= numberOfColumns; i++) {
+				System.out.print(" " + rsmd.getColumnLabel(i) + "\t | ");
+			}
+			System.out.println();
+			System.out
+					.println("---------------------------------------------------------------------------------------");
+
+			// Creamos las filas de la tabla con la informacion de la tuplas			
+			while (rs.next()) {// Por cada tupla
+				// creamos una linea con la informacion:
+				for (int j = 1; j <= numberOfColumns; j++) {
+					System.out.print(" " + rs.getString(j) + "\t | ");
+					list.add(rs.getString(j));
+				}
+				System.out.println();
+			}
+			return list;
+		} catch (SQLException e) {
+			System.out.println("Error: " + e.getMessage());
+			rs = null;
+		} finally {
+			System.out
+					.println("---------------------------------------------------------------------------------------");
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+				}
+			}
+			
+		}
+		return list;
+	}
+	
+	
 	/**
 	 * Metodo para realizar una consulta/orden SQL con 
 	 * una sola variable condicinal, pensado para "where campo=X"
@@ -196,7 +253,7 @@ public class DBConnection {
 	/**
 	 * Metodo para ejecutar una sentencia SQL que no sea una pregunta, es decir,
 	 * que no devuelva una tabla como resultado.
-	 * Sin parametros explicitamente especificados.
+	 * Sin parámetros explicitamente especificados.
 	 * 
 	 * @param sql
 	 *            sentencia SQL
@@ -226,7 +283,7 @@ public class DBConnection {
 	/**
 	 * Metodo para ejecutar una sentencia SQL que no sea una pregunta, es decir,
 	 * que no devuelva una tabla como resultado.
-	 * Con parametros explicitamente especificados.
+	 * Con parámetros explicitamente especificados.
 	 * 
 	 * @param sql
 	 *            sentencia SQL
@@ -260,7 +317,7 @@ public class DBConnection {
 	/**
 	 * Metodo para ejecutar una sentencia SQL que no sea una pregunta, es decir,
 	 * que no devuelva una tabla como resultado.
-	 * Con parametros explicitamente especificados.
+	 * Con parámetros explicitamente especificados.
 	 * 
 	 * @param sql
 	 *            sentencia SQL
@@ -318,7 +375,64 @@ public class DBConnection {
 		 return rs;
 		
 	}
+	
+	public ArrayList<Object> executeSentenceResult2(String sql, Object... params) {
+		PreparedStatement stmt = null;
+		ArrayList<Object> list = new ArrayList<Object>();
+		ResultSet rs;
+		try {
+			System.out
+					.println("---------------------------------------------------------------------------------------");
+			stmt = connection.prepareStatement(sql);
+			for (int i = 0; i < params.length; i++) {
+				stmt.setObject(i + 1, params[i]);
+			}
+			// int resultado = stmt.executeUpdate();
+			// rs=stmt.executeUpdate();
+			rs = stmt.executeQuery();
+			// System.out.println(resultado);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();
 
+			for (int i = 1; i <= numberOfColumns; i++) {
+				System.out.print(" " + rsmd.getColumnLabel(i) + "\t | ");
+			}
+			System.out.println();
+			System.out
+					.println("---------------------------------------------------------------------------------------");
+
+			// Creamos las filas de la tabla con la informacion de la tuplas
+			// obtenidas
+			while (rs.next()) {// Por cada tupla
+				// creamos una linea con la informacion:
+				for (int j = 1; j <= numberOfColumns; j++) {
+					System.out.print(" " + rs.getString(j) + "\t | ");
+					list.add(rs.getString(j));
+				}
+				System.out.println();
+			}
+			// return rs;
+			return list;
+
+		} catch (SQLException e) {
+			System.out.println("Error: " + e.getMessage());
+			rs = null;
+		} finally {
+			System.out
+					.println("---------------------------------------------------------------------------------------");
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		// return rs;
+		return list;
+	}
+
+	
+	
 	public Cursor executeQueryAndGetCursor(String sql) {
 		Statement stmt = null;
 		try {
