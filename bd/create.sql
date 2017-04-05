@@ -33,8 +33,8 @@ CREATE TABLE programa (
     descr       VARCHAR(1000),
     # destacado: 0 = no; 1 = sí
     destacado   TINYINT NOT NULL,
-    inicio      TIMESTAMP NOT NULL,
-    fin         TIMESTAMP NOT NULL,
+    inicio      DATETIME NOT NULL,
+    fin         DATETIME NOT NULL,
     cat         CHAR(50) NOT NULL,
     PRIMARY KEY (titulo, bar),
     FOREIGN KEY (bar) REFERENCES bar(nickbar),
