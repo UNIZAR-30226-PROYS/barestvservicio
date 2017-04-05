@@ -39,7 +39,7 @@ public class Programa {
 	}
 	
 	public void Insertar(DBConnection database){
-		//TODO Modulo para controlar solo administrador del bar/root pueda añadir
+		//TODO Modulo para controlar solo administrador del bar/root pueda anyadir
 		
 		try{
 		

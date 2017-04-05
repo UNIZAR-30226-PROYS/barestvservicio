@@ -1,6 +1,6 @@
 /*
  * Programa de ejemplo para que se vea como se usan las clases para conectarse a la base de datos, insertar y buscar
- * obviamente, habrá que borrarlo en algún punto.
+ * obviamente, habrï¿½ que borrarlo en algï¿½n punto.
  * 
  * */
 
@@ -27,8 +27,8 @@ public class Pruebaconex {
 				
 				inst.executeQuery("Select * from programa");
 				//Creo dos instancias de Programa, una que insertare, y otra cualquiera que uso para busca
-				//realmente no tiene mucho sentido que la funcion de buscar sea propia de Programa, se quitará cuando
-				//se añada una jerarquía de usuarios con distintos accesos a los metodos.
+				//realmente no tiene mucho sentido que la funcion de buscar sea propia de Programa, se quitara cuando
+				//se anyada una jerarquia de usuarios con distintos accesos a los metodos.
 				Programa pr = new Programa("cualquiernombre", "barejemplo");
 				Programa pr2 = new Programa("programa guay", "barejemplo","programa de ejemplo mas guay que el anterior porqu lo inserto desde java",
 										"2017-10-10 14:20:00.0","2017-10-10 17:00:00.0","ejemplo");

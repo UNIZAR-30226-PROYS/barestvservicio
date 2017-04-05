@@ -196,7 +196,7 @@ public class DBConnection {
 	/**
 	 * Metodo para ejecutar una sentencia SQL que no sea una pregunta, es decir,
 	 * que no devuelva una tabla como resultado.
-	 * Sin parámetros explicitamente especificados.
+	 * Sin parametros explicitamente especificados.
 	 * 
 	 * @param sql
 	 *            sentencia SQL
@@ -226,7 +226,7 @@ public class DBConnection {
 	/**
 	 * Metodo para ejecutar una sentencia SQL que no sea una pregunta, es decir,
 	 * que no devuelva una tabla como resultado.
-	 * Con parámetros explicitamente especificados.
+	 * Con parametros explicitamente especificados.
 	 * 
 	 * @param sql
 	 *            sentencia SQL
@@ -260,7 +260,7 @@ public class DBConnection {
 	/**
 	 * Metodo para ejecutar una sentencia SQL que no sea una pregunta, es decir,
 	 * que no devuelva una tabla como resultado.
-	 * Con parámetros explicitamente especificados.
+	 * Con parametros explicitamente especificados.
 	 * 
 	 * @param sql
 	 *            sentencia SQL
