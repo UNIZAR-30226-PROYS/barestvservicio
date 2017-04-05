@@ -1,8 +1,15 @@
 package unizar.margaretHamilton.baresTvServicio;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+//import com.mysql.jdbc.Connection;
+//import com.mysql.jdbc.PreparedStatement;
 
 public class Programa {
 	private String titulo;
@@ -39,7 +46,7 @@ public class Programa {
 	}
 	
 	public void Insertar(DBConnection database){
-		//TODO Modulo para controlar solo administrador del bar/root pueda anyadir
+		//TODO Modulo para controlar solo administrador del bar/root pueda añadir
 		
 		try{
 		
@@ -55,7 +62,7 @@ public class Programa {
 		
 	}
 	
-	public ResultSet ObtenerProgramacion(DBConnection database,String bar){
+	/*public ResultSet ObtenerProgramacion(DBConnection database,String bar){
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		String a = dtf.format(now);
@@ -64,6 +71,68 @@ public class Programa {
 		//System.out.println(sql);
 		
 		return database.executeQuery(sql);
+	}*/
+	
+	public List<Programa> ObtenerProgramacion(DBConnection database,String bar) throws SQLException{
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		String a = dtf.format(now);
+		String sql = "SELECT * FROM programa "
+				+ "WHERE fin > "+"'"+a+"'"+ " and bar = "+"'"+bar+"'";
+		//Connection connection = null;
+	    PreparedStatement statement = null;
+	    ResultSet resultSet = null;
+	    List<Programa> plist = new ArrayList<Programa>();
+		//System.out.println(sql);
+	    
+	    try {
+	    statement=database.connection.prepareStatement(sql);
+        //statement = connection.prepareStatement("SELECT id, name, value FROM Biler");
+        resultSet = statement.executeQuery();
+        
+        while (resultSet.next()) {
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            		resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
+
+            plist.add(pro);
+        }
+        
+	    } finally {
+	        if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
+	        if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
+	       // if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+		
+		return plist;
+	}
+	
+	public String to_String(){
+		String st="";
+		st=st+" || "+this.titulo+" || "+this.bar+" || "+this.destacado+" || "+this.descripcion+" || "+this.categoria+
+				" || "+this.inicio+" || "+this.fin;
+		return st;
+	}
+	
+	public String getTitulo(){
+		return this.titulo;
+	}
+	public String getBar(){
+		return this.bar;
+	}
+	public int getDest(){
+		return this.destacado;
+	}
+	public String getDesc(){
+		return this.descripcion;
+	}
+	public String getCategoria(){
+		return this.categoria;
+	}
+	public String getInicio(){
+		return this.inicio;
+	}
+	public String getFin(){
+		return this.fin;
 	}
 	
 	
