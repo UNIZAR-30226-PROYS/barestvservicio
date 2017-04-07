@@ -1,5 +1,7 @@
 # barestv-servidor
 
+NOTA: APItmp contiene los métodos debidamente especificados que deberán usarse para el desarrollo de las aplicaciones cliente con una implementación temporal, no funcional.
+
 * Tablero de Trello: https://trello.com/b/W1ZCBHk2
 
 # Persistencia
