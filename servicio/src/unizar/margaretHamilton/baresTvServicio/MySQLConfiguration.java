@@ -6,34 +6,34 @@ package unizar.margaretHamilton.baresTvServicio;
 
 public class MySQLConfiguration implements Configuration {
 
-	private String host;
-	private String port;
-	private String dbName;
+    private String host;
+    private String port;
+    private String dbName;
 
-	public MySQLConfiguration(String host, String port, String dbName) {
-		this.host = host;
-		this.port = port;
-		this.dbName = dbName;
-	}
+    public MySQLConfiguration(String host, String port, String dbName) {
+        this.host = host;
+        this.port = port;
+        this.dbName = dbName;
+    }
 
-	public String getDriver() {
-		return "com.mysql.jdbc.Driver";
-	}
+    public String getDriver() {
+        return "com.mysql.jdbc.Driver";
+    }
 
-	public String getURL() {
-		return "jdbc:mysql://" + getHost() + ":" + getPort() + "/" + getDBName();
-	}
+    public String getURL() {
+        return "jdbc:mysql://" + getHost() + ":" + getPort() + "/" + getDBName();
+    }
 
-	private String getDBName() {
-		return dbName;
-	}
+    private String getDBName() {
+        return dbName;
+    }
 
-	private String getPort() {
-		return port == null ? "3306" : port;
-	}
+    private String getPort() {
+        return port == null ? "3306" : port;
+    }
 
-	private String getHost() {
-		return host;
-	}
+    private String getHost() {
+        return host;
+    }
 
 }

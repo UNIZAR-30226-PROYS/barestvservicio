@@ -6,8 +6,8 @@ package unizar.margaretHamilton.baresTvServicio;
  */
 public interface Configuration {
 
-	String getDriver();
+    String getDriver();
 
-	String getURL();
+    String getURL();
 
 }
