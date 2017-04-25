@@ -1,5 +1,8 @@
 package unizar.margaretHamilton.baresTvServicio;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,23 @@ public class Server {
     public String bares() {
         List<Programa> lista = new ArrayList<Programa>();
         lista.add(new Programa("uno","bar1"));
+        lista.add(new Programa("dos","bar1","Xian es tonto",LocalDateTime.of(2017, 05,29,18,30).toString(),LocalDateTime.of(2017, 05,29,19,30).toString()));
         return lista.toString();
     }
-
+    @GET
+    @Produces("application/json")
+    @Path("/destacados")
+    public String destacados() {
+        /*List<Programa> lista = new ArrayList<Programa>();
+        lista.add(new Programa("XianTonto 2","bar1","Xian es tonto",LocalDateTime.of(2017, 05,29,18,30).toString(),LocalDateTime.of(2017, 05,29,19,30).toString()));
+        return lista.toString();*/
+        String a = null;
+        try {
+            a = Programa.ObtenerDestacados().toString();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return a;
+    }
 }
