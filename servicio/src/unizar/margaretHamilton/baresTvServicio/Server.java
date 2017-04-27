@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 
 @Path("/server")
@@ -32,6 +33,19 @@ public class Server {
         String a = null;
         try {
             a = Programa.ObtenerDestacados().toString();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return a;
+    }
+    @GET
+    @Produces("application/json")
+    @Path("/filtro/categoria")
+    public String filtrarCategoria(@QueryParam("cat") String cat){
+        String a = null;
+        try {
+            a = Programa.filtrarCategoria(cat).toString();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
