@@ -13,3 +13,11 @@ NOTA: APItmp contiene los métodos debidamente especificados que deberán usarse
 ## Diseño lógico
 
 ![Diseño lógico](/dise%C3%B1o/l%C3%B3gico.png?raw=true "Diseño lógico")
+
+# Despliegue
+
+![Diagrama de despliegue](/dise%C3%B1o/despliegue.png?raw=true "Diagrama de despliegue")
+
+# Diagrama de clases API REST
+
+![Diagrama de clases API REST](/servicio/classes.png?raw=true "Diagrama de clases API REST")
