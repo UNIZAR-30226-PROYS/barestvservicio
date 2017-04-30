@@ -9,8 +9,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+@XmlRootElement
 public class Categoria {
-    
+    @XmlElement(name="Nombre")
 	private String nombre;	
 	
 	public Categoria(){
@@ -91,7 +98,7 @@ public class Categoria {
 	
 	
 	
-	public List<Programa> getProgramasenCategoria(DBConnection database, String categoria) throws SQLException{
+	/*public List<Programa> getProgramasenCategoria(DBConnection database, String categoria) throws SQLException{
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		String a = dtf.format(now);
@@ -135,6 +142,18 @@ public class Categoria {
 	    }
 		
 		return plist;
-	}
+	}*/
+	
+
+	
+	 @Override
+	    public String toString(){
+	        try {
+	            // takes advantage of toString() implementation to format {"a":"b"}
+	            return new JSONObject().put("Nombre", nombre).toString();
+	        } catch (JSONException e) {
+	            return null;
+	        }
+	    }
 			
 }
