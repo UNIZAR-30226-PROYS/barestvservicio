@@ -44,10 +44,6 @@ public class Server {
     @Produces("application/json")
     @Path("/busqueda")
     public String busqueda(@QueryParam("find") String find) {
-        /*List<Programa> lista = new ArrayList<Programa>();
-        lista.add(new Programa("XianTonto 2","bar1","Xian es tonto",LocalDateTime.of(2017, 05,29,18,30).toString(),LocalDateTime.of(2017, 05,29,19,30).toString()));
-        return lista.toString();*/
-        System.out.println(find);
         String a = null;
         try {
             a = Programa.busqueda(find).toString();
