@@ -27,12 +27,23 @@ public class Server {
     @Produces("application/json")
     @Path("/destacados")
     public String destacados() {
-        /*List<Programa> lista = new ArrayList<Programa>();
-        lista.add(new Programa("XianTonto 2","bar1","Xian es tonto",LocalDateTime.of(2017, 05,29,18,30).toString(),LocalDateTime.of(2017, 05,29,19,30).toString()));
-        return lista.toString();*/
         String a = null;
         try {
             a = Programa.ObtenerDestacados().toString();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return a;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/programacion")
+    public String programacion() {
+        String a = null;
+        try {
+            a = Programa.ObtenerProgramacion().toString();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -56,6 +67,50 @@ public class Server {
     
     @GET
     @Produces("application/json")
+    @Path("/busqueda/filtro/categoria")
+    public String busquedaCat(@QueryParam("find") String find, @QueryParam("cat") String cat) {
+        String a = null;
+        try {
+            a = Programa.busquedaCat(find,cat).toString();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return a;
+    }
+    
+    /*
+    @GET
+    @Produces("application/json")
+    @Path("/busqueda/filtro/tiempo")
+    public String busquedaCat(@QueryParam("find") String find, @QueryParam("cat") String cat) {
+        String a = null;
+        try {
+            a = Programa.busquedaTiempo(find,cat).toString();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return a;
+    }*/
+    
+    /*
+    @GET
+    @Produces("application/json")
+    @Path("/busqueda/filtro/total")
+    public String busquedaCat(@QueryParam("find") String find, @QueryParam("cat") String cat) {
+        String a = null;
+        try {
+            a = Programa.busquedaTotal(find,cat).toString();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return a;
+    }*/
+    
+    @GET
+    @Produces("application/json")
     @Path("/filtro/categoria")
     public String filtrarCategoria(@QueryParam("cat") String cat){
         String a = null;
@@ -67,4 +122,18 @@ public class Server {
         }
         return a;
     }
+    /*
+    @GET
+    @Produces("application/json")
+    @Path("/filtro/categoria")
+    public String filtrarCategoria(@QueryParam("cat") String cat){
+        String a = null;
+        try {
+            a = Programa.filtrarCategoria(cat).toString();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return a;
+    }*/
 }
