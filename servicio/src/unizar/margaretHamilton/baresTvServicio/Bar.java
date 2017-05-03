@@ -111,7 +111,7 @@ public class Bar {
 		
 			
 
-			String sql =  "select * from bar "; 
+			String sql =  "select * from bar where activado = 1"; 
 			System.out.println(sql);
 			statement=inst.connection.prepareStatement(sql);
 			bares = new ArrayList<Bar>();
