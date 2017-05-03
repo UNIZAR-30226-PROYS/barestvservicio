@@ -156,54 +156,6 @@ public class Bar {
 		return bares;	
 	}
 	
-	
-	
-	
-	/*public List<Programa> getProgramasenCategoria(DBConnection database, String categoria) throws SQLException{
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		String a = dtf.format(now);
-		String sql = "SELECT * FROM programa "
-				+ "WHERE fin > "+"'"+a+"'"+ " and cat = "+"'"+categoria+"'";
-		//Connection connection = null;
-	    PreparedStatement statement = null;
-	    ResultSet resultSet = null;
-	    List<Programa> plist = new ArrayList<Programa>();
-		//System.out.println(sql);
-	    
-	    try {
-
-	    statement=database.connection.prepareStatement(sql);
-        //statement = connection.prepareStatement("SELECT id, name, value FROM Biler");
-        resultSet = statement.executeQuery();
-        
-        
-        ResultSetMetaData rsmd = resultSet.getMetaData();
-		int numberOfColumns = rsmd.getColumnCount();
-
-		for (int i = 1; i <= numberOfColumns; i++) {
-			System.out.print(" " + rsmd.getColumnLabel(i) + "\t | ");
-		}
-		System.out.println();
-		System.out
-				.println("---------------------------------------------------------------------------------------");
-        
-        while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
-            		resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
-
-            plist.add(pro);
-            System.out.println(pro.to_String());
-        }
-        
-	    } finally {
-	        if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
-	        if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
-	       // if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-	    }
-		
-		return plist;
-	}*/
 			
 }
 
