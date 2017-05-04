@@ -38,7 +38,7 @@ CREATE TABLE programa (
     cat         CHAR(50) NOT NULL,
     PRIMARY KEY (titulo, bar),
     FOREIGN KEY (bar) REFERENCES bar(nickbar),
-    FOREIGN KEY (cat) REFERENCES categoria(nombrecat)
+    FOREIGN KEY (cat) REFERENCES categoria(nombrecat) ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS categoria;
