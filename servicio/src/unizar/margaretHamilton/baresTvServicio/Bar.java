@@ -156,6 +156,74 @@ public class Bar {
 		return bares;	
 	}
 	
+	public ArrayList<Bar> getAllInRadius(DBConnection inst, float fromLat, float fromLng, float radiusInKm)
+		 {
+		 MySQLConfiguration db = null;
+		// DBConnection inst;
+		// TODO Auto-generated method stub
+		ArrayList<Bar> bares = null;
+		
+		try{
+		//inst = new DBConnection(db);
+		PreparedStatement statement = null;
+		inst.connect();
+		ResultSet rs =  null;
+		
+		
+			String sql =  "SELECT *, "
+                                + "( 6371 * acos( cos( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin( radians(?) ) * sin( radians( lat ) ) ) ) AS distance "
+                                + "FROM bar "
+                                + "WHERE activado = 1 "
+                                + "HAVING distance < ? ORDER BY distance"; 
+			System.out.println(sql);
+			statement=inst.connection.prepareStatement(sql);
+                        
+                        statement.setFloat(1, fromLat);
+                        statement.setFloat(2, fromLng);
+                        statement.setFloat(3, fromLat);
+                        statement.setFloat(4, radiusInKm);
+                        
+			bares = new ArrayList<>();
+			
+	        rs = statement.executeQuery();
+	        
+	        ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();
+
+			for (int i = 1; i <= numberOfColumns; i++) {
+				System.out.print(" " + rsmd.getColumnLabel(i) + "\t | ");
+			}
+			System.out.println();
+			System.out
+					.println("---------------------------------------------------------------------------------------");
+			
+            
+			while (rs.next()){                              					                    
+				Bar b= new Bar(
+						//nombre
+						rs.getString("nickbar"), rs.getString("nombre"), rs.getString("descrbar"), rs.getFloat("lat"),
+						rs.getFloat("lng"),rs.getString("direccion"), rs.getString("urlimagen") );
+				bares.add(b);
+				System.out.println(" " + b.getNick() + "\t | "+ b.getNombre() + "\t | "+ b.getDescripcion() + "\t | "+ b.getLat() + "\t | "
+						+ b.getLng() + "\t | "+ b.getDireccion() + "\t | "+ b.getImgURL() + "\t | ");
+
+				//String nickbar,String nombre, String descripcion, float lat, float lng, String direccion, String URL
+			}
+		}catch (Exception e){
+			System.out.println("Error al obtener bares cercanos: "+e.getMessage());
+			e.printStackTrace();
+			//throw new Exception(e.getMessage());
+		}
+		finally {
+			try{
+				
+				//inst.disconnect();
+			}catch (Exception e1){
+				System.out.println("Error cerrando la conexi?n");
+			}
+		}
+		return bares;	
+	}
 			
 }
 
