@@ -36,49 +36,25 @@ public class Categoria {
 		this.nombre = nombre;
 	}
 	
-	public ArrayList<Categoria> getAll(DBConnection inst)
-		 {
-		 MySQLConfiguration db = null;
-		// DBConnection inst;
-		// TODO Auto-generated method stub
-		ArrayList<Categoria> categorias = null;
+	public static List<Categoria> getAll() throws SQLException {
+		
+		MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
+	    DBConnection inst; 
+		List<Categoria> categorias = new ArrayList<Categoria>();
+		PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String sql = "Select * from categoria;";
 		
 		try{
-		//inst = new DBConnection(db);
-		PreparedStatement statement = null;
-		inst.connect();
-		ResultSet rs =  null;
-		
-		
-			
-
-			String sql =  "select * from categoria "; 
-			System.out.println(sql);
-			statement=inst.connection.prepareStatement(sql);
-			categorias = new ArrayList<Categoria>();
-			
-	        rs = statement.executeQuery();
-	        
-	        ResultSetMetaData rsmd = rs.getMetaData();
-			int numberOfColumns = rsmd.getColumnCount();
-
-			for (int i = 1; i <= numberOfColumns; i++) {
-				System.out.print(" " + rsmd.getColumnLabel(i) + "\t | ");
-			}
-			System.out.println();
-			System.out
-					.println("---------------------------------------------------------------------------------------");
-			
+		    inst = new DBConnection(db,"root","root");
+            inst.connect();
+            statement=inst.connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
             
-			while (rs.next()){                              					                    
-				Categoria c= new Categoria(
-						//nombre
-						rs.getString("nombrecat"));
-				categorias.add(c);
-				System.out.println(" " + c.getNombre() + "\t | ");
-
-				
-			}
+            while(resultSet.next()) {
+                Categoria c = new Categoria(resultSet.getString("nombrecat"));
+                categorias.add(c);
+            }
 		}catch (Exception e){
 			System.out.println("Error al obtener categorias: "+e.getMessage());
 			e.printStackTrace();
@@ -86,7 +62,6 @@ public class Categoria {
 		}
 		finally {
 			try{
-				
 				//inst.disconnect();
 			}catch (Exception e1){
 				System.out.println("Error cerrando la conexi?n");

@@ -17,12 +17,39 @@ public class Server {
     @GET
     @Produces("application/json")
     @Path("/bar")
-    public String bares() {
-        List<Programa> lista = new ArrayList<Programa>();
-        lista.add(new Programa("uno","bar1"));
-        lista.add(new Programa("dos","bar1","Xian es tonto",LocalDateTime.of(2017, 05,29,18,30).toString(),LocalDateTime.of(2017, 05,29,19,30).toString()));
-        return lista.toString();
+    public String bares(@QueryParam("lat") float lat,@QueryParam("lng") float lng,@QueryParam("radio") float radio) {
+        String bares = null;
+        try {
+            bares = Bar.getAllInRadius(lat, lng, radio).toString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bares;
+        
     }
+    @GET
+    @Produces("application/json")
+    @Path("/categorias")
+    public String categorias() {
+        String categorias = null;
+        try {
+            categorias = Categoria.getAll().toString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categorias;
+        
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/actualizar")
+    public String bares(@QueryParam("lista") String lista) {
+        System.out.println(lista);
+        return new Bar(lista).toString();
+        
+    }
+    
     @GET
     @Produces("application/json")
     @Path("/destacados")
@@ -31,7 +58,6 @@ public class Server {
         try {
             a = Programa.ObtenerDestacados().toString();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return a;
@@ -45,7 +71,6 @@ public class Server {
         try {
             a = Programa.ObtenerProgramacion().toString();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return a;
@@ -59,7 +84,6 @@ public class Server {
         try {
             a = Programa.busqueda(find).toString();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return a;
@@ -73,7 +97,6 @@ public class Server {
         try {
             a = Programa.busquedaCat(find,cat).toString();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return a;
@@ -83,12 +106,12 @@ public class Server {
     @GET
     @Produces("application/json")
     @Path("/busqueda/filtro/tiempo")
-    public String busquedaCat(@QueryParam("find") String find, @QueryParam("cat") String cat) {
+    public String busquedaCat(@QueryParam("find") String find, @QueryParam("day") int day,
+            @QueryParam("month") int month, @QueryParam("year") int year) {
         String a = null;
         try {
             a = Programa.busquedaTiempo(find,cat).toString();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return a;
@@ -98,12 +121,12 @@ public class Server {
     @GET
     @Produces("application/json")
     @Path("/busqueda/filtro/total")
-    public String busquedaCat(@QueryParam("find") String find, @QueryParam("cat") String cat) {
+    public String busquedaCat(@QueryParam("find") String find, @QueryParam("cat") String cat, 
+            @QueryParam("day") int day, @QueryParam("month") int month, @QueryParam("year") int year) {
         String a = null;
         try {
             a = Programa.busquedaTotal(find,cat).toString();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return a;
@@ -117,7 +140,6 @@ public class Server {
         try {
             a = Programa.filtrarCategoria(cat).toString();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return a;
@@ -131,7 +153,6 @@ public class Server {
         try {
             a = Programa.filtrarCategoria(cat).toString();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return a;
