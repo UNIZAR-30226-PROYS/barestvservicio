@@ -47,6 +47,7 @@ public class Programa {
         this.fin=null;      
     }
     
+    
     public Programa(String titulo, String bar, 
             String descripcion,String inicio,String fin, String categoria){
         
@@ -82,35 +83,6 @@ public class Programa {
         this.destacado=destacado;
     }
     
-    
-    public void Insertar(DBConnection database){
-        //TODO Modulo para controlar solo administrador del bar/root pueda añadir
-        
-        try{
-        
-        String sql= "INSERT INTO programa " +
-                "(titulo, bar, descr, destacado, inicio, fin, cat )"+
-                "VALUES (?,?,?,?,?,?,?)";
-        //System.out.println(sql);
-        database.executeSentence(sql, titulo,bar,descripcion,0,inicio,fin,categoria);
-        }
-        catch (Exception e){
-            System.out.println("Error al insertar programa");
-        }
-        
-    }
-    
-    /*public ResultSet ObtenerProgramacion(DBConnection database,String bar){
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        String a = dtf.format(now);
-        String sql = "SELECT * FROM programa "
-                + "WHERE fin > "+"'"+a+"'"+ " and bar = "+"'"+bar+"'";
-        //System.out.println(sql);
-        
-        return database.executeQuery(sql);
-    }*/
-    
     public static List<Programa> ObtenerDestacados() throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
         DBConnection inst;
@@ -137,13 +109,10 @@ public class Programa {
         }
         
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
@@ -154,7 +123,9 @@ public class Programa {
         return plist;
     }
 
-    public List<Programa> ActualizarFavoritos(DBConnection database,List<Programa> favs) throws SQLException{
+    public static List<Programa> actualizarFavoritos(List<Programa> favs) throws SQLException{
+        MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
+        DBConnection inst = null;
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
@@ -164,20 +135,27 @@ public class Programa {
         int nfavs = favs.size();
         int ind =0;
         
+        try {
+            inst = new DBConnection(db,"root","root");
+            inst.connect();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }     
+        
         for (ind=0;ind<nfavs;ind++){
         
         try {
             
         String sql = "SELECT * FROM programa "
-                    + "WHERE fin > ?  and bar = ? and titulo = ?";
+                    + "WHERE  bar = ? and titulo = ?";
             
         statement = null;
         resultSet = null;
             
-        statement=database.connection.prepareStatement(sql);
-        statement.setString(1, a);
-        statement.setString(2, favs.get(0).getBar());
-        statement.setString(3, favs.get(0).getTitulo());
+        statement=inst.connection.prepareStatement(sql);
+        statement.setString(1, favs.get(0).getBar());
+        statement.setString(2, favs.get(0).getTitulo());
+        //statement.setString(3, a);
         resultSet = statement.executeQuery();
         
         
@@ -186,14 +164,11 @@ public class Programa {
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
-            System.out.println(pro.to_String());
+
         }
         favs.remove(0);
         
         } finally {
-           // if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
-           // if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
-           // if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
         }
         }
         if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
@@ -206,11 +181,11 @@ public class Programa {
     public static List<Programa> filtrarCategoria(String categoria) throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
         DBConnection inst;
-        //LocalDateTime now = LocalDateTime.now();
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //String a = dtf.format(now);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(now);
         String sql = "SELECT * FROM programa "
-                + "WHERE cat = ?";
+                + "WHERE cat = ? AND fin > ?";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -220,6 +195,7 @@ public class Programa {
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
         statement.setString(1, categoria);
+        statement.setString(2, a);
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
@@ -230,13 +206,10 @@ public class Programa {
         }
         
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
@@ -246,15 +219,15 @@ public class Programa {
         
         return plist;
     }
-    /*
-    public static List<Programa> filtrarTiempo(String categoria) throws SQLException{
+    
+    public static List<Programa> filtrarTotal(String categoria, int d,int m,int y) throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
         DBConnection inst;
-        //LocalDateTime now = LocalDateTime.now();
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //String a = dtf.format(now);
+        LocalDateTime fecha = LocalDateTime.of(y, m, d, 0, 0);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(fecha);
         String sql = "SELECT * FROM programa "
-                + "WHERE cat = ?";
+                + "WHERE cat = ? AND fin > ?";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -264,6 +237,7 @@ public class Programa {
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
         statement.setString(1, categoria);
+        statement.setString(2, a);
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
@@ -274,13 +248,10 @@ public class Programa {
         }
         
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
@@ -289,17 +260,58 @@ public class Programa {
         }
         
         return plist;
-    }*/
+    }
+
+    public static List<Programa> filtrarTiempo(int dia, int mes, int anyo) throws SQLException{
+        MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
+        DBConnection inst;
+        LocalDateTime fecha = LocalDateTime.of(anyo, mes, dia, 0, 0);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(fecha);
+        String sql = "SELECT * FROM programa "
+                + "WHERE fin > ?";
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Programa> plist = new ArrayList<Programa>();
+  
+        try {
+        inst = new DBConnection(db,"root","root");
+        inst.connect();
+        statement=inst.connection.prepareStatement(sql);
+        statement.setString(1, a);
+        resultSet = statement.executeQuery();
+        
+        while (resultSet.next()) {
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+                    resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
+
+            plist.add(pro);
+        }
+        
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
+            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
+           // if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+        
+        return plist;
+    }
     
     public static List<Programa> busqueda(String find) throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
         DBConnection inst;
-        //LocalDateTime now = LocalDateTime.now();
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //String a = dtf.format(now);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(now);
         String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar = ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo = ?)) A";
+                + "WHERE bar = ? AND fin > ?) UNION (SELECT * FROM programa "
+                + "WHERE titulo = ? AND fin > ?)) A";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -309,7 +321,9 @@ public class Programa {
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
         statement.setString(1, find);
-        statement.setString(2, find);
+        statement.setString(2, a);
+        statement.setString(3, find);
+        statement.setString(4, a);
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
@@ -320,13 +334,10 @@ public class Programa {
         }
         
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
@@ -340,12 +351,12 @@ public class Programa {
     public static List<Programa> busquedaCat(String find, String cat) throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
         DBConnection inst;
-        //LocalDateTime now = LocalDateTime.now();
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //String a = dtf.format(now);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(now);
         String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar = ? AND cat = ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo = ? AND cat = ?)) A";
+                + "WHERE bar = ? AND cat = ? AND fin > ?) UNION (SELECT * FROM programa "
+                + "WHERE titulo = ? AND cat = ? AND fin > ?)) A";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -356,8 +367,10 @@ public class Programa {
         statement=inst.connection.prepareStatement(sql);
         statement.setString(1, find);
         statement.setString(2, cat);
-        statement.setString(3, find);
-        statement.setString(4, cat);
+        statement.setString(3, a);
+        statement.setString(4, find);
+        statement.setString(5, cat);
+        statement.setString(6, a);        
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
@@ -368,13 +381,10 @@ public class Programa {
         }
         
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
@@ -385,65 +395,16 @@ public class Programa {
         return plist;
     }
     
-    /*
-    public static List<Programa> busquedaTotal(String find, String cat) throws SQLException{
-        MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
-        DBConnection inst;
-        //LocalDateTime now = LocalDateTime.now();
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //String a = dtf.format(now);
-        String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar = ? AND cat = ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo = ? AND cat = ?)) A";
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        List<Programa> plist = new ArrayList<Programa>();
-  
-        try {
-        inst = new DBConnection(db,"root","root");
-        inst.connect();
-        statement=inst.connection.prepareStatement(sql);
-        statement.setString(1, find);
-        statement.setString(2, cat);
-        statement.setString(3, find);
-        statement.setString(4, cat);
-        resultSet = statement.executeQuery();
-        
-        while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
-                    resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
-
-            plist.add(pro);
-        }
-        
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
-            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
-           // if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-        }
-        
-        return plist;
-    }*/
     
-    /*
-    public static List<Programa> busquedaTiempo(String find, String cat) throws SQLException{
+    public static List<Programa> busquedaTotal(String find, String cat, int d,int m,int y) throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
         DBConnection inst;
-        //LocalDateTime now = LocalDateTime.now();
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //String a = dtf.format(now);
+        LocalDateTime now = LocalDateTime.of(y,m,d,0,0);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(now);
         String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar = ? AND cat = ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo = ? AND cat = ?)) A";
+                + "WHERE bar = ? AND cat = ? AND fin > ?) UNION (SELECT * FROM programa "
+                + "WHERE titulo = ? AND cat = ? AND fin > ?)) A";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -454,8 +415,10 @@ public class Programa {
         statement=inst.connection.prepareStatement(sql);
         statement.setString(1, find);
         statement.setString(2, cat);
-        statement.setString(3, find);
-        statement.setString(4, cat);
+        statement.setString(3, a);
+        statement.setString(4, find);
+        statement.setString(5, cat);
+        statement.setString(6, a);     
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
@@ -466,13 +429,10 @@ public class Programa {
         }
         
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
@@ -481,7 +441,53 @@ public class Programa {
         }
         
         return plist;
-    }*/
+    }
+    
+    
+    public static List<Programa> busquedaTiempo(String find, int d, int m, int y) throws SQLException{
+        MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
+        DBConnection inst;
+        LocalDateTime now = LocalDateTime.of(y,m,d,0,0);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(now);
+        String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
+                + "WHERE bar = ? AND fin > ?) UNION (SELECT * FROM programa "
+                + "WHERE titulo = ? AND fin > ?)) A";
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Programa> plist = new ArrayList<Programa>();
+  
+        try {
+        inst = new DBConnection(db,"root","root");
+        inst.connect();
+        statement=inst.connection.prepareStatement(sql);
+        statement.setString(1, find);
+        statement.setString(2, a);
+        statement.setString(3, find);
+        statement.setString(4, a);
+        resultSet = statement.executeQuery();
+        
+        while (resultSet.next()) {
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+                    resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
+
+            plist.add(pro);
+        }
+        
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
+            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
+           // if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+        
+        return plist;
+    }
     
     public static List<Programa> ObtenerProgramacionBar(String bar) throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
@@ -510,13 +516,10 @@ public class Programa {
         }
         
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
@@ -552,13 +555,10 @@ public class Programa {
         }
         
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
