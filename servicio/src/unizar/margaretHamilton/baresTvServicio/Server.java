@@ -9,6 +9,11 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 @Path("/server")
@@ -16,26 +21,159 @@ public class Server {
     @GET
     @Produces("application/json")
     @Path("/bar")
-    public String bares() {
-        List<Programa> lista = new ArrayList<Programa>();
-        lista.add(new Programa("uno","bar1"));
-        lista.add(new Programa("dos","bar1","Xian es tonto",LocalDateTime.of(2017, 05,29,18,30).toString(),LocalDateTime.of(2017, 05,29,19,30).toString()));
-        return lista.toString();
+    public String bares(@QueryParam("lat") float lat,@QueryParam("lng") float lng,@QueryParam("radio") float radio) {
+        String bares = null;
+        try {
+            bares = Bar.getAllInRadius(lat, lng, radio).toString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bares;
+        
     }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/programasBar")
+    public String programasBar(@QueryParam("bar") String bar) {
+        String a = null;
+        try {
+            a = Programa.programasBar(bar).toString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return a;
+    }
+    @GET
+    @Produces("application/json")
+    @Path("/categorias")
+    public String categorias() {
+        String categorias = null;
+        try {
+            categorias = Categoria.getAll().toString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categorias;
+        
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/actualizar")
+    public String bares(@QueryParam("lista") String lista) {
+        JSONArray array = new JSONArray(lista);
+        JSONObject obj = null;
+        List<Programa> a = new ArrayList<Programa>();
+        for (int i=0; i < array.length(); i++) {
+            try {
+                obj = array.getJSONObject(i);
+                a.add(new Programa(obj.getString("Titulo"),obj.getString("Bar")));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        String b = null;
+        try {
+            b = Programa.actualizarFavoritos(a).toString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return b;
+    } 
+        
+ 
+    
     @GET
     @Produces("application/json")
     @Path("/destacados")
     public String destacados() {
-        /*List<Programa> lista = new ArrayList<Programa>();
-        lista.add(new Programa("XianTonto 2","bar1","Xian es tonto",LocalDateTime.of(2017, 05,29,18,30).toString(),LocalDateTime.of(2017, 05,29,19,30).toString()));
-        return lista.toString();*/
         String a = null;
         try {
             a = Programa.ObtenerDestacados().toString();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return a;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/programacion")
+    public String programacion() {
+        String a = null;
+        try {
+            a = Programa.ObtenerProgramacion().toString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return a;
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/busqueda")
+    public String busquedaCat(@QueryParam("find") String find, @QueryParam("cat") String cat,
+            @QueryParam("day") int day, @QueryParam("month") int month, @QueryParam("year") int year) {
+        if (find.equals("")) {
+            if (cat.equals("")) {
+                if (day == 0) {
+                    return new Bar("hola2",19,19).toString();
+                } else {
+                    try {
+                        return Programa.filtrarTiempo(day,month,year).toString();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                if (day == 0) {
+                    try {
+                        return Programa.filtrarCategoria(cat).toString();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        return Programa.filtrarTotal(cat, day, month, year).toString();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            if (cat.equals("")) {
+                if (day==0) {
+                   try {
+                       return Programa.busqueda(find).toString();
+                   } catch (SQLException e) {
+                    e.printStackTrace();
+                   } 
+                } else {
+                    try {
+                        return Programa.busquedaTiempo(find, day, month, year).toString();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                if (day == 0) {
+                    try {
+                        return Programa.busquedaCat(find, cat).toString();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        return Programa.busquedaTotal(find, cat, day, month, year).toString();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+           
+        }
+        return cat;
     }
 }

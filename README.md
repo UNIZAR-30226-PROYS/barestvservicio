@@ -17,3 +17,7 @@ NOTA: APItmp contiene los métodos debidamente especificados que deberán usarse
 # Despliegue
 
 ![Diagrama de despliegue](/dise%C3%B1o/despliegue.png?raw=true "Diagrama de despliegue")
+
+# Diagrama de clases API REST
+
+![Diagrama de clases API REST](/servicio/classes.png?raw=true "Diagrama de clases API REST")
