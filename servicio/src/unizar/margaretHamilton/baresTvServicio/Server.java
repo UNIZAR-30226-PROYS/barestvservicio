@@ -31,6 +31,19 @@ public class Server {
         return bares;
         
     }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/programasBar")
+    public String programasBar(@QueryParam("bar") String bar) {
+        String a = null;
+        try {
+            a = Programa.programasBar(bar).toString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return a;
+    }
     @GET
     @Produces("application/json")
     @Path("/categorias")
@@ -61,7 +74,6 @@ public class Server {
                 e.printStackTrace();
             }
         }
-        System.out.println(lista);
         String b = null;
         try {
             b = Programa.actualizarFavoritos(a).toString();
@@ -104,11 +116,6 @@ public class Server {
     @Path("/busqueda")
     public String busquedaCat(@QueryParam("find") String find, @QueryParam("cat") String cat,
             @QueryParam("day") int day, @QueryParam("month") int month, @QueryParam("year") int year) {
-        System.out.println(find);
-        System.out.println(cat);
-        System.out.println(day);
-        
-        
         if (find.equals("")) {
             if (cat.equals("")) {
                 if (day == 0) {

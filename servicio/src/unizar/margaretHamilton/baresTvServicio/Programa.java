@@ -86,11 +86,11 @@ public class Programa {
     public static List<Programa> ObtenerDestacados() throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
         DBConnection inst;
-        //LocalDateTime now = LocalDateTime.now();
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //String a = dtf.format(now);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(now);
         String sql = "SELECT * FROM programa "
-                + "WHERE destacado = 1";
+                + "WHERE destacado = 1 AND fin > ?";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -99,6 +99,7 @@ public class Programa {
         inst = new DBConnection(db,"root","root");
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
+        statement.setString(1, a);
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
@@ -176,7 +177,48 @@ public class Programa {
            // if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
         return plist;
         
-}
+    }
+    
+    public static List<Programa> programasBar(String bar) throws SQLException{
+        MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
+        DBConnection inst;
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(now);
+        String sql = "SELECT * FROM programa "
+                + "WHERE bar = ? AND fin > ?";
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Programa> plist = new ArrayList<Programa>();
+  
+        try {
+        inst = new DBConnection(db,"root","root");
+        inst.connect();
+        statement=inst.connection.prepareStatement(sql);
+        statement.setString(1, bar);
+        statement.setString(2, a);
+        resultSet = statement.executeQuery();
+        
+        while (resultSet.next()) {
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+                    resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
+
+            plist.add(pro);
+        }
+        
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
+            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
+        }
+        
+        return plist;
+    }
     
     public static List<Programa> filtrarCategoria(String categoria) throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
@@ -310,8 +352,8 @@ public class Programa {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
         String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar = ? AND fin > ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo = ? AND fin > ?)) A";
+                + "WHERE bar LIKE ? AND fin > ?) UNION (SELECT * FROM programa "
+                + "WHERE titulo LIKE ? AND fin > ?)) A";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -320,9 +362,9 @@ public class Programa {
         inst = new DBConnection(db,"root","root");
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
-        statement.setString(1, find);
+        statement.setString(1, "%"+find+"%");
         statement.setString(2, a);
-        statement.setString(3, find);
+        statement.setString(3, "%"+find+"%");
         statement.setString(4, a);
         resultSet = statement.executeQuery();
         
@@ -355,8 +397,8 @@ public class Programa {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
         String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar = ? AND cat = ? AND fin > ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo = ? AND cat = ? AND fin > ?)) A";
+                + "WHERE bar LIKE ? AND cat = ? AND fin > ?) UNION (SELECT * FROM programa "
+                + "WHERE titulo LIKE ? AND cat = ? AND fin > ?)) A";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -365,10 +407,10 @@ public class Programa {
         inst = new DBConnection(db,"root","root");
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
-        statement.setString(1, find);
+        statement.setString(1, "%"+find+"%");
         statement.setString(2, cat);
         statement.setString(3, a);
-        statement.setString(4, find);
+        statement.setString(4, "%"+find+"%");
         statement.setString(5, cat);
         statement.setString(6, a);        
         resultSet = statement.executeQuery();
@@ -403,8 +445,8 @@ public class Programa {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
         String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar = ? AND cat = ? AND fin > ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo = ? AND cat = ? AND fin > ?)) A";
+                + "WHERE bar LIKE ? AND cat = ? AND fin > ?) UNION (SELECT * FROM programa "
+                + "WHERE titulo LIKE ? AND cat = ? AND fin > ?)) A";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -413,10 +455,10 @@ public class Programa {
         inst = new DBConnection(db,"root","root");
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
-        statement.setString(1, find);
+        statement.setString(1, "%"+find+"%");
         statement.setString(2, cat);
         statement.setString(3, a);
-        statement.setString(4, find);
+        statement.setString(4, "%"+find+"%");
         statement.setString(5, cat);
         statement.setString(6, a);     
         resultSet = statement.executeQuery();
@@ -451,8 +493,8 @@ public class Programa {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
         String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar = ? AND fin > ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo = ? AND fin > ?)) A";
+                + "WHERE bar LIKE ? AND fin > ?) UNION (SELECT * FROM programa "
+                + "WHERE titulo LIKE ? AND fin > ?)) A";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -461,9 +503,9 @@ public class Programa {
         inst = new DBConnection(db,"root","root");
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
-        statement.setString(1, find);
+        statement.setString(1, "%"+find+"%");
         statement.setString(2, a);
-        statement.setString(3, find);
+        statement.setString(3, "%"+find+"%");
         statement.setString(4, a);
         resultSet = statement.executeQuery();
         
@@ -533,10 +575,10 @@ public class Programa {
     public static List<Programa> ObtenerProgramacion() throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
         DBConnection inst;
-        //LocalDateTime now = LocalDateTime.now();
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //String a = dtf.format(now);
-        String sql = "SELECT * FROM programa";
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(now);
+        String sql = "SELECT * FROM programa where FIN > ?";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -545,7 +587,9 @@ public class Programa {
         inst = new DBConnection(db,"root","root");
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
+        statement.setString(1, a);
         resultSet = statement.executeQuery();
+        
         
         while (resultSet.next()) {
             Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
