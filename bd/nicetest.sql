@@ -1,4 +1,4 @@
-USE barestv;
+USE nf0n21jv2up9wz1b;
 
 INSERT INTO usuario(nick, clave, permisos) VALUES ('Q1022965', SHA2('root', 512), 0);
 INSERT INTO usuario(nick, clave, permisos) VALUES ('Q1025571', SHA2('root', 512), 0);
