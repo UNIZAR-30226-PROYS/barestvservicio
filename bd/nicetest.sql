@@ -1,5 +1,6 @@
 USE nf0n21jv2up9wz1b;
 
+INSERT INTO usuario(nick, clave, permisos) VALUES ('laprensa', SHA2('root', 512), 0);
 INSERT INTO usuario(nick, clave, permisos) VALUES ('Q1022965', SHA2('root', 512), 0);
 INSERT INTO usuario(nick, clave, permisos) VALUES ('Q1025571', SHA2('root', 512), 0);
 INSERT INTO usuario(nick, clave, permisos) VALUES ('Q1025579', SHA2('root', 512), 0);
@@ -796,7 +797,7 @@ INSERT INTO usuario(nick, clave, permisos) VALUES ('Q924480', SHA2('root', 512),
 
 
 
-
+INSERT INTO bar(nickbar, nombre, descrbar, activado, lat, lng, direccion, urlimagen) VALUES ('laprensa', 'La Prensa', 'Alma, imaginación, sinceridad y una Estrella Michelín. ¡Seguro que saldrá encantado! En este restaurante de gestión familiar, dotado con un bar de espera y dos salas de estética actual, apuestan por una cocina creativa de base tradicional donde prima la calidad de los productos utilizados. ¡Plantean su oferta a través de varios menús!', 1, 41.633338, -0.874856, 'José Nebra 3, 50007 Zaragoza, España', 'https://guiarepsol.s3.amazonaws.com/pro/media/filer_public_thumbnails/filer_public/73/90/73902b50-f741-498d-9917-316b85d58dc0/foto-26.jpg__940x620_q83.jpg');
 INSERT INTO bar(nickbar, nombre, descrbar, activado, lat, lng, direccion, urlimagen) VALUES ('Q1022965', 'CBGB', 'El mejor bar de tapas de ejemplo, con la mejor programación de ejemplo.', 1, 40.725277777, -73.991944444, 'Manhattan, Tierra, Vía Láctea', 'https://upload.wikimedia.org/wikipedia/commons/d/da/CBGB_club_facade.jpg');
 INSERT INTO bar(nickbar, nombre, descrbar, activado, lat, lng, direccion, urlimagen) VALUES ('Q1025571', 'Café Bauer', 'El mejor bar de tapas de ejemplo, con la mejor programación de ejemplo.', 1, 50.1133, 8.67854, 'Fráncfort del Meno, Tierra, Vía Láctea', 'https://upload.wikimedia.org/wikipedia/commons/d/d5/Bavaria_Frankfurt_1891.jpg');
 INSERT INTO bar(nickbar, nombre, descrbar, activado, lat, lng, direccion, urlimagen) VALUES ('Q1025579', 'Café Carina', 'El mejor bar de tapas de ejemplo, con la mejor programación de ejemplo.', 1, 48.2113, 16.3392, 'Viena, Tierra, Vía Láctea', 'https://upload.wikimedia.org/wikipedia/commons/9/90/Caf%C3%A9_Carina_I.png');
@@ -1628,7 +1629,7 @@ INSERT INTO categoria(nombrecat) VALUES ('sin usar');
 
 
 
-
+INSERT INTO programa(titulo, bar, descr, destacado, inicio, fin, cat) VALUES ('A potar', 'laprensa', 'El programa del siglo.', 0, '2017-07-01 23:27:00', '2017-07-02 00:12:00', 'ejemplo');
 INSERT INTO programa(titulo, bar, descr, destacado, inicio, fin, cat) VALUES ('Festival de la Canción de Eurovisión 2012', 'Q7735987', 'El programa del siglo.', 0, '2012-01-01 14:12:00', '2012-01-01 16:40:00', 'MÚSICA');
 INSERT INTO programa(titulo, bar, descr, destacado, inicio, fin, cat) VALUES ('Festival de la Canción de Eurovisión 1971', 'Q5946815', 'El programa del siglo.', 0, '1971-01-01 04:12:00', '1971-01-01 05:30:00', 'MÚSICA');
 INSERT INTO programa(titulo, bar, descr, destacado, inicio, fin, cat) VALUES ('Festival de la Canción de Eurovisión 1972', 'Q4983163', 'El programa del siglo.', 0, '1972-01-01 08:49:00', '1972-01-01 09:47:00', 'MÚSICA');
