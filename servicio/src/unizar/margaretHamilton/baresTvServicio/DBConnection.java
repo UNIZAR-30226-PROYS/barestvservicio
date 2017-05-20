@@ -13,12 +13,12 @@ public class DBConnection {
      * CaDena de caracteres con el nombre de usuario, o login, a emplear para
      * conectarse a la BD
      */
-    String user = "";
+    String user = "tmj0dzwkh4vehpmz";
     /**
      * Cadena de caracteres con el password, o contrase??a, a emplear para
      * conectarse a la BD
      */
-    String password = "";
+    String password = "w03mq6w1axo73dth";
     /**
      * Conexion con la BD
      */
@@ -33,11 +33,9 @@ public class DBConnection {
      * como MySQLCOnfiguration
      * 
      */
-    public DBConnection(Configuration config, String user, String password)
+    public DBConnection(Configuration config)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         this.config = config;
-        this.user = user;
-        this.password = password;
 
         Class.forName(config.getDriver()).newInstance();
     }

@@ -4,8 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -175,7 +173,7 @@ public class Bar {
 	}
 	
 	public static List<Bar> getAllInRadius(float fromLat, float fromLng, float radiusInKm) throws SQLException{
-	    MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
+	    Configuration db = new MySQLConfiguration();
         DBConnection inst; 
 		List<Bar> bares = new ArrayList<Bar>();
 		
@@ -183,7 +181,7 @@ public class Bar {
         ResultSet resultSet = null;
 		
 		try{
-		    inst = new DBConnection(db,"root","root");
+		    inst = new DBConnection(db);
 	        inst.connect();
 		
 		

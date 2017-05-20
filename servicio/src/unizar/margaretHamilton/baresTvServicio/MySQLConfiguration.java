@@ -6,14 +6,11 @@ package unizar.margaretHamilton.baresTvServicio;
 
 public class MySQLConfiguration implements Configuration {
 
-    private String host;
-    private String port;
-    private String dbName;
+    private static String host="hngomrlb3vfq3jcr.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
+    private static String port="3306";
+    private static String dbName="nf0n21jv2up9wz1b";
 
-    public MySQLConfiguration(String host, String port, String dbName) {
-        this.host = host;
-        this.port = port;
-        this.dbName = dbName;
+    public MySQLConfiguration() {
     }
 
     public String getDriver() {

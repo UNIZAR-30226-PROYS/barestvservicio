@@ -38,7 +38,7 @@ public class Categoria {
 	
 	public static List<Categoria> getAll() throws SQLException {
 		
-		MySQLConfiguration db = new MySQLConfiguration("127.0.0.1","3306","barestv");
+		MySQLConfiguration db = new MySQLConfiguration();
 	    DBConnection inst; 
 		List<Categoria> categorias = new ArrayList<Categoria>();
 		PreparedStatement statement = null;
@@ -46,7 +46,7 @@ public class Categoria {
         String sql = "Select * from categoria;";
 		
 		try{
-		    inst = new DBConnection(db,"root","root");
+		    inst = new DBConnection(db);
             inst.connect();
             statement=inst.connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
