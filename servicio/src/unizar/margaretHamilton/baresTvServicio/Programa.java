@@ -89,8 +89,8 @@ public class Programa {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
-        String sql = "SELECT * FROM programa "
-                + "WHERE destacado = 1 AND fin > ? ORDER BY inicio";
+        String sql = "SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar,programa "
+                + "WHERE destacado = 1 AND bar=nickbar AND fin > ? ORDER BY inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -103,12 +103,12 @@ public class Programa {
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -139,86 +139,42 @@ public class Programa {
         try {
             inst = new DBConnection(db);
             inst.connect();
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+        
+        for (ind=0;ind<nfavs;ind++){            
+            String sql = "SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                        + "WHERE bar=nickbar AND nombre = ? and titulo = ? AND fin > ?";
+                
+            statement = null;
+            resultSet = null;
+                
+            statement=inst.connection.prepareStatement(sql);
+            statement.setString(1, favs.get(0).getBar());
+            statement.setString(2, favs.get(0).getTitulo());
+            statement.setString(3, a);
+            resultSet = statement.executeQuery();
+            
+            
+            while (resultSet.next()) {
+                Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
+                        resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
+    
+                plist.add(pro);
+    
+            }
+            favs.remove(0);
+            
+        }
+        inst.disconnect();
+        }
+         catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }     
-        
-        for (ind=0;ind<nfavs;ind++){
-        
-        try {
-            
-        String sql = "SELECT * FROM programa "
-                    + "WHERE  bar = ? and titulo = ? AND fin > a";
-            
-        statement = null;
-        resultSet = null;
-            
-        statement=inst.connection.prepareStatement(sql);
-        statement.setString(1, favs.get(0).getBar());
-        statement.setString(2, favs.get(0).getTitulo());
-        //statement.setString(3, a);
-        resultSet = statement.executeQuery();
-        
-        
-        while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
-                    resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
-
-            plist.add(pro);
-
+        finally {
         }
-        favs.remove(0);
-        
-        } finally {
-        }
-        }
-        if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
-            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
-           // if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
         return plist;
         
     }
     
-    public static List<Programa> programasBar(String bar) throws SQLException{
-        MySQLConfiguration db = new MySQLConfiguration();
-        DBConnection inst;
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        String a = dtf.format(now);
-        String sql = "SELECT * FROM programa "
-                + "WHERE bar = ? AND fin > ? ORDER BY inicio";
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        List<Programa> plist = new ArrayList<Programa>();
-  
-        try {
-        inst = new DBConnection(db);
-        inst.connect();
-        statement=inst.connection.prepareStatement(sql);
-        statement.setString(1, bar);
-        statement.setString(2, a);
-        resultSet = statement.executeQuery();
-        
-        while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
-                    resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
-
-            plist.add(pro);
-        }
-        
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) try { resultSet.close(); } catch (SQLException ignore) {}
-            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
-        }
-        
-        return plist;
-    }
     
     public static List<Programa> filtrarCategoria(String categoria) throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration();
@@ -226,8 +182,8 @@ public class Programa {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
-        String sql = "SELECT * FROM programa "
-                + "WHERE cat = ? AND fin > ? ORDER BY inicio";
+        String sql = "SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                + "WHERE bar=nickbar AND cat = ? AND fin > ? ORDER BY inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -241,12 +197,12 @@ public class Programa {
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -268,8 +224,8 @@ public class Programa {
         LocalDateTime fecha = LocalDateTime.of(y, m, d, 0, 0);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(fecha);
-        String sql = "SELECT * FROM programa "
-                + "WHERE cat = ? AND fin > ? ORDER BY inicio";
+        String sql = "SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                + "WHERE bar=nickbar AND cat = ? AND fin > ? ORDER BY inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -283,12 +239,12 @@ public class Programa {
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -310,8 +266,8 @@ public class Programa {
         LocalDateTime fecha = LocalDateTime.of(anyo, mes, dia, 0, 0);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(fecha);
-        String sql = "SELECT * FROM programa "
-                + "WHERE fin > ? ORDER By inicio";
+        String sql = "SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa  "
+                + "WHERE bar=nickbar AND fin > ? ORDER By inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -324,12 +280,12 @@ public class Programa {
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -351,9 +307,9 @@ public class Programa {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
-        String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar LIKE ? AND fin > ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo LIKE ? AND fin > ?)) A ORDER BY inicio";
+        String sql = "SELECT DISTINCT * FROM ((SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                + "WHERE bar=nickbar AND nombre LIKE ? AND fin > ?) UNION (SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                + "WHERE bar=nickbar AND titulo LIKE ? AND fin > ?)) A ORDER BY inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -369,12 +325,12 @@ public class Programa {
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -396,9 +352,9 @@ public class Programa {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
-        String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar LIKE ? AND cat = ? AND fin > ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo LIKE ? AND cat = ? AND fin > ?)) A ORDER BY inicio";
+        String sql = "SELECT DISTINCT * FROM ((SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                + "WHERE bar=nickbar AND nombre LIKE ? AND cat = ? AND fin > ?) UNION (SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                + "WHERE bar=nickbar AND titulo LIKE ? AND cat = ? AND fin > ?)) A ORDER BY inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -416,12 +372,12 @@ public class Programa {
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -444,9 +400,9 @@ public class Programa {
         LocalDateTime now = LocalDateTime.of(y,m,d,0,0);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
-        String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar LIKE ? AND cat = ? AND fin > ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo LIKE ? AND cat = ? AND fin > ?)) A ORDER BY inicio";
+        String sql = "SELECT DISTINCT * FROM ((SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                + "WHERE bar=nickbar AND nombre LIKE ? AND cat = ? AND fin > ?) UNION (SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                + "WHERE bar=nickbar AND titulo LIKE ? AND cat = ? AND fin > ?)) A ORDER BY inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -464,12 +420,12 @@ public class Programa {
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -492,9 +448,9 @@ public class Programa {
         LocalDateTime now = LocalDateTime.of(y,m,d,0,0);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
-        String sql = "SELECT DISTINCT * FROM ((SELECT * FROM programa "
-                + "WHERE bar LIKE ? AND fin > ?) UNION (SELECT * FROM programa "
-                + "WHERE titulo LIKE ? AND fin > ?)) A ORDER BY inicio";
+        String sql = "SELECT DISTINCT * FROM ((SELECT  titulo, nombre, descr, destacado, inicio, fin, cat FROM bar, programa "
+                + "WHERE bar=nickbar AND nombre LIKE ? AND fin > ?) UNION (SELECT  titulo, nombre, descr, destacado, inicio, fin, cat FROM bar,programa "
+                + "WHERE bar=nickbar AND titulo LIKE ? AND fin > ?)) A ORDER BY inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -510,12 +466,12 @@ public class Programa {
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -531,14 +487,14 @@ public class Programa {
         return plist;
     }
     
-    public static List<Programa> ObtenerProgramacionBar(String bar) throws SQLException{
+    public static List<Programa> programasBar(String bar) throws SQLException{
         MySQLConfiguration db = new MySQLConfiguration();
         DBConnection inst;
-        //LocalDateTime now = LocalDateTime.now();
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        //String a = dtf.format(now);
-        String sql = "SELECT * FROM programa "
-                + "WHERE bar = ? ORDER BY inicio";
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String a = dtf.format(now);
+        String sql = "SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar,programa "
+                + "WHERE programa.bar=nickbar AND bar.nombre=? AND fin > ?  ORDER BY inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -548,15 +504,16 @@ public class Programa {
         inst.connect();
         statement=inst.connection.prepareStatement(sql);
         statement.setString(1, bar);
+        statement.setString(2,a);
         resultSet = statement.executeQuery();
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -578,7 +535,7 @@ public class Programa {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String a = dtf.format(now);
-        String sql = "SELECT * FROM programa where FIN > ? ORDER BY inicio";
+        String sql = "SELECT titulo, nombre, descr, destacado, inicio, fin, cat FROM bar,programa where FIN > ? AND bar=nickbar ORDER BY inicio";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Programa> plist = new ArrayList<Programa>();
@@ -592,12 +549,12 @@ public class Programa {
         
         
         while (resultSet.next()) {
-            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("bar"), resultSet.getString("descr"),
+            Programa pro = new Programa(resultSet.getString("titulo"), resultSet.getString("nombre"), resultSet.getString("descr"),
                     resultSet.getString("inicio"), resultSet.getString("fin"), resultSet.getString("cat"));
 
             plist.add(pro);
         }
-        
+        inst.disconnect();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

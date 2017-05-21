@@ -204,6 +204,7 @@ public class Bar {
 
 				//String nickbar,String nombre, String descripcion, float lat, float lng, String direccion, String URL
 			}
+			inst.disconnect();
 		}catch (Exception e){
 			System.out.println("Error al obtener bares cercanos: "+e.getMessage());
 			e.printStackTrace();

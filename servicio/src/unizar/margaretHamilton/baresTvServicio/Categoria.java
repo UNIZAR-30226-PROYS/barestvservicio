@@ -55,6 +55,7 @@ public class Categoria {
                 Categoria c = new Categoria(resultSet.getString("nombrecat"));
                 categorias.add(c);
             }
+            inst.disconnect();
 		}catch (Exception e){
 			System.out.println("Error al obtener categorias: "+e.getMessage());
 			e.printStackTrace();
