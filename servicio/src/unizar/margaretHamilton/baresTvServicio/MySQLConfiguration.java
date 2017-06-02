@@ -6,7 +6,7 @@ package unizar.margaretHamilton.baresTvServicio;
 
 public class MySQLConfiguration implements Configuration {
 
-    private static String host="hngomrlb3vfq3jcr.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
+    private static String host="localhost";
     private static String port="3306";
     private static String dbName="nf0n21jv2up9wz1b";
 

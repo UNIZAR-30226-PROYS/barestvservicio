@@ -13,12 +13,12 @@ public class DBConnection {
      * CaDena de caracteres con el nombre de usuario, o login, a emplear para
      * conectarse a la BD
      */
-    String user = "tmj0dzwkh4vehpmz";
+    String user = "apirest";
     /**
      * Cadena de caracteres con el password, o contrase??a, a emplear para
      * conectarse a la BD
      */
-    String password = "w03mq6w1axo73dth";
+    String password = "apirest";
     /**
      * Conexion con la BD
      */
